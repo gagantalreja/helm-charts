@@ -43,6 +43,16 @@ service:
   annotations:
     argocd.argoproj.io/sync-wave: "4"
 
+
+data:
+  enabled: true
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  data:
+    proxy-connect-timeout: "10s"
+    proxy-read-timeout: "10s"
+    client-max-body-size: "2m"
+
 ingress:
   enabled: false
   className: ""

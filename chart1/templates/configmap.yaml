@@ -1,0 +1,16 @@
+{{- if .Values.data.enabled }}
+  kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: {{ include "chart1.fullname" . }}
+    labels:
+      {{- include "chart1.labels" . | nindent 4 }}
+    {{- with .Values.data.annotations }}
+    annotations:
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.data.data }}
+  data:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
