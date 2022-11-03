@@ -68,7 +68,7 @@ spec:
             annotations: {}
             enabled: false
           
-  project: {{ .Values.project }}-admin-{{ .Values.env }}
+  project: default
   syncPolicy:
     automated:
       prune: true
