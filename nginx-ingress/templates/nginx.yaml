@@ -1,0 +1,78 @@
+{{ if .Values.singletenant }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{.Values.project}}-{{.Values.env}}-nginx
+  namespace: argocd-internal
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: ingress-nginx
+    name: {{.Values.project}}-{{.Values.env}}
+  source:
+    path: ''
+    repoURL: 'https://kubernetes.github.io/ingress-nginx'
+    targetRevision: 3.31.0
+    chart: ingress-nginx
+    helm:
+      values: |
+        controller:
+          image:
+            repository: nginx/nginx-ingress
+            tag: "v0.46.0"
+          admissionWebhooks:
+            enabled: false
+          service:
+            ports:
+              http: 80
+              https: 443
+            targetPorts:
+              http: http
+              https: http
+            annotations:
+              service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
+              service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
+              service.beta.kubernetes.io/aws-load-balancer-type: nlb
+              service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+              service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: proxy_protocol_v2.enabled=true
+          metrics:
+            enabled: true
+          config:
+            use-proxy-protocol: "true"
+            use-forwarded-headers: "true"
+            log-format-escape-json: "true"
+            log-format-upstream: '{"nginx_version":"$nginx_version","timestamp": "$time_iso8601", "requestID": "$req_id", "proxyUpstreamName":
+              "$proxy_upstream_name", "proxyAlternativeUpstreamName": "$proxy_alternative_upstream_name","upstreamStatus":
+              "$upstream_status", "upstreamAddr": "$upstream_addr","httpRequest":{"requestMethod":
+              "$request_method", "requestUrl": "$host$request_uri", "status": $status,"requestSize":
+              "$request_length", "responseSize": "$upstream_response_length", "userAgent": "$http_user_agent",
+              "remoteIp": "$remote_addr", "referer": "$http_referer", "latency": "$upstream_response_time s",
+              "protocol":"$server_protocol", "nginx_version":"$nginx_version","server_addr":"$server_addr","server_port":"$server_port","server_protocol":"$server_protocol","remote_user":"$remote_user","request":"$request","pipe":"$pipe","query_string":"$query_string","uri":"$uri","http_cookie":"$http_cookie"}}'
+          annotations:
+            reloader.stakater.com/auto: "true"
+          resources:
+            limits:
+              cpu: 2000m
+            requests:
+              cpu: 1000m
+              memory: 300Mi
+          autoscaling:
+            enabled: true
+            minReplicas: 2
+            maxReplicas: 5
+            targetCPUUtilizationPercentage: 150
+            targetMemoryUtilizationPercentage: 300
+          terminationGracePeriodSeconds: 180
+          admissionWebhooks:
+            annotations: {}
+            enabled: false
+          
+  project: {{ .Values.project }}-admin-{{ .Values.env }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
+{{ end }}

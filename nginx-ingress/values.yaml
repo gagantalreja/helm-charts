@@ -1,0 +1,17 @@
+global:
+  eshost: eshost.internalinnovaccer-dev.svc.cluster.local
+  mongohost: mongodb-ext.internalinnovaccer-dev.svc.cluster.local
+  redishost: redisdb.internalinnovaccer-dev.svc.cluster.local
+  postgreshost: postgresdb.internalinnovaccer-dev.svc.cluster.local
+  mysqlhost: mysqldb.internalinnovaccer-dev.svc.cluster.local
+  VaultAddr: 'https://vault-internal.innovaccer.net'
+  labels:
+    project: internalinnovaccer
+    env: dev
+    cloud: aws
+    argons: argocd-internal
+
+  mongodb:
+    operator:
+      enabled: false
+allowed_countries: "IN 1; US 1;"
