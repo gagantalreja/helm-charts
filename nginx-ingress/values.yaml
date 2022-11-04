@@ -1,12 +1,12 @@
 global:
-  eshost: eshost.internalinnovaccer-dev.svc.cluster.local
-  mongohost: mongodb-ext.internalinnovaccer-dev.svc.cluster.local
-  redishost: redisdb.internalinnovaccer-dev.svc.cluster.local
-  postgreshost: postgresdb.internalinnovaccer-dev.svc.cluster.local
-  mysqlhost: mysqldb.internalinnovaccer-dev.svc.cluster.local
-  VaultAddr: 'https://vault-internal.innovaccer.net'
+  eshost: eshost.internal-dev.svc.cluster.local
+  mongohost: mongodb-ext.internal-dev.svc.cluster.local
+  redishost: redisdb.internal-dev.svc.cluster.local
+  postgreshost: postgresdb.internal-dev.svc.cluster.local
+  mysqlhost: mysqldb.internal-dev.svc.cluster.local
+  VaultAddr: 'https://vault-internal..net'
   labels:
-    project: internalinnovaccer
+    project: internal
     env: dev
     cloud: aws
     argons: argocd-internal
